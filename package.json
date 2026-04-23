@@ -27,7 +27,7 @@
     "start": "cross-env NODE_ENV=development rollup -c -w",
     "build": "cross-env PLATFORM=all rollup -c",
     "test": "vitest",
-    "demo": "vite demo --open"
+    "demo": "vite --config vite.config.ts --open"
   },
   "devDependencies": {
     "@leafer-in/animate": "^2.1.0",
@@ -61,5 +61,9 @@
     "@leafer-in/export": "^2.1.0",
     "gifenc": "^1.0.3",
     "leafer-ui": "^2.1.0"
+  },
+  "dependencies": {
+    "@leafer-in/film": "file:leafer-in-film-1.0.0-beta.tgz",
+    "@pxgrow/license": "file:pxgrow-license-1.0.6.tgz"
   }
 }

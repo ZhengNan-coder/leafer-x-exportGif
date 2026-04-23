@@ -6,6 +6,8 @@ export interface RgbaFrame {
     width: number
     height: number
     data: Uint8ClampedArray
+    /** 当前帧停留时长（毫秒），不传则回退到全局 frameDelayMs */
+    delayMs?: number
 }
 
 /** 导出每一帧时的选项（透传给 Leafer `export`） */

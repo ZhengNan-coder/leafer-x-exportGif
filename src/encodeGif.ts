@@ -90,7 +90,6 @@ function rgbaFramesToGifBytes(
     const outH = outputHeight ?? srcH
 
     const gif = GIFEncoder()
-    const delayCentiseconds = Math.max(1, Math.round(frameDelayMs / 10))
 
     const allProcessed = frames.map((f) => {
         const flat = flattenAlpha(f.data, bgR, bgG, bgB)
@@ -106,9 +105,11 @@ function rgbaFramesToGifBytes(
 
     for (let i = 0; i < allProcessed.length; i++) {
         const index = applyPalette(allProcessed[i], palette)
+        const delayMs = Math.max(10, Math.round(frames[i].delayMs ?? frameDelayMs))
         gif.writeFrame(index, outW, outH, {
             palette: i === 0 ? palette : undefined,
-            delay: delayCentiseconds,
+            // gifenc 接收的是毫秒；库内部会再换算成 GIF 的 1/100 秒单位
+            delay: delayMs,
             repeat: i === 0 ? repeat : undefined,
         })
     }
