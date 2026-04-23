@@ -1,18 +1,60 @@
-# LeaferX
+# leafer-x-exportGif
 
-LeaferX 是 Leafer 的第三方插件与上层应用中心，收录可用于生产环境的优秀插件和应用。
+Leafer 的 GIF 动画导出插件，支持将 Leafer 画布动画导出为高质量 GIF 文件，兼容 `@leafer-in/film` 内嵌 GIF 动画的导出。
 
-本仓库代码可作为 [插件开发模版](./template.md) 使用。
+## 特性
 
-## 命名规范
+- 将 Leafer 画布动画逐帧捕获并导出为 GIF
+- 全局调色板量化，颜色还原度高
+- 透明通道预合成（flattenAlpha），消除黑边
+- 支持高清截图 + 降采样，输出清晰
+- 支持 `@leafer-in/film` GIF 动画帧同步导出
+- 可配置帧率、时长、背景色、输出尺寸
 
-第三方插件命名规范: leafer-x-插件名, 全局变量名为 LeaferX.插件名
+## 演示资源
 
-第三方应用命名规范: leafer-应用名 或 自定义名称
+| 文件 | 说明 |
+|------|------|
+| [导出效果演示](./leafer-export%20(1).gif) | 插件导出的 GIF 效果展示 |
+| [操作录屏](./录屏2026-04-23%2022.01.48.mov) | Demo 操作流程录屏 |
+| [GIF 图标](./public/image/gif-icon.svg) | 带 "GIF" 字样的胶片角标图标 |
+
+## 快速开始
+
+```ts
+import { Leafer, Rect } from 'leafer-ui'
+import { exportGif } from 'leafer-x-exportGif'
+
+const leafer = new Leafer({ view: window, fill: '#ffffff' })
+const rect = new Rect({ x: 100, y: 100, width: 100, height: 100, fill: '#32cd32' })
+leafer.add(rect)
+
+// 导出 GIF
+const blob = await exportGif(leafer, {
+  duration: 2000,
+  fps: 15,
+  background: '#ffffff',
+  outputWidth: 400,
+  outputHeight: 400,
+})
+```
+
+## 配置项
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `duration` | `number` | - | 动画时长（毫秒） |
+| `fps` | `number` | `15` | 帧率 |
+| `background` | `string` | `'#ffffff'` | 背景色 |
+| `outputWidth` | `number` | 画布宽度 | 输出宽度 |
+| `outputHeight` | `number` | 画布高度 | 输出高度 |
+
+## 开发
 
 ```sh
-leafer-x-selector  # 读作 leafer 乘以 selector （插件）
-leafer-vue #  基于 leafer 的 vue 组件库 （上层应用）
+npm run demo    # 启动 demo（vite --port 12226）
+npm run build   # 构建
+npm test        # 测试
 ```
 
 ## 收录要求
