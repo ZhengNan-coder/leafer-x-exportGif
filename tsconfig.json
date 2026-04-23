@@ -27,7 +27,8 @@
         "**/dist/**",
         "**/lib/**",
         "**/scripts/**",
-        "**/types/**"
+        "**/types/**",
+        "main.ts"
     ],
     "ts-node": {
         "files": true,

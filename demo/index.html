@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>leafer-x-exportGif Demo</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f0f13;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 32px;
+        }
+
+        .layout {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .panel {
+            background: #1a1a22;
+            border: 1px solid #2a2a38;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .panel h2 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 16px;
+        }
+
+        #leafer-container {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            position: relative;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .field input[type=range] {
+            width: 100%;
+            accent-color: #6c6cff;
+        }
+
+        .field-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .field-row span {
+            color: #6c6cff;
+            font-weight: 600;
+            min-width: 36px;
+            text-align: right;
+        }
+
+        .btn {
+            padding: 10px 0;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            width: 100%;
+        }
+
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn:not(:disabled):hover { opacity: 0.85; }
+
+        .btn-primary {
+            background: #6c6cff;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #2a2a3a;
+            color: #ccc;
+            border: 1px solid #3a3a50;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            min-height: 18px;
+        }
+
+        .status.running { color: #facc15; }
+        .status.done { color: #4ade80; }
+        .status.error { color: #f87171; }
+
+        .preview-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        #gif-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            object-fit: contain;
+            background: repeating-conic-gradient(#2a2a38 0% 25%, #1a1a22 0% 50%) 0 0 / 16px 16px;
+            display: none;
+        }
+
+        #gif-preview.visible { display: block; }
+
+        .empty-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: repeating-conic-gradient(#2a2a38 0% 25%, #1a1a22 0% 50%) 0 0 / 16px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            font-size: 13px;
+        }
+
+        .progress {
+            height: 3px;
+            background: #2a2a38;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #6c6cff;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            background: #12121a;
+            border: 1px solid #2a2a38;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <h1>leafer-x-exportGif</h1>
+    <p class="subtitle">在 Leafer 画布上运行动画，一键导出为 GIF</p>
+
+    <div class="layout">
+        <div class="panel">
+            <h2>Leafer 画布</h2>
+            <div id="leafer-container"></div>
+        </div>
+
+        <div class="panel">
+            <h2>导出配置</h2>
+            <div class="controls">
+
+                <div class="field">
+                    <div class="field-row">
+                        <label>FPS（采样帧率）</label>
+                        <span id="fps-val">12</span>
+                    </div>
+                    <input type="range" id="fps" min="5" max="24" step="1" value="12" />
+                </div>
+
+                <div class="field">
+                    <div class="field-row">
+                        <label>时长（秒）</label>
+                        <span id="dur-val">3</span>
+                    </div>
+                    <input type="range" id="dur" min="1" max="8" step="0.5" value="3" />
+                </div>
+
+                <div class="field">
+                    <label>动画场景</label>
+                    <select id="scene">
+                        <option value="bounce">弹跳变色圆角矩形</option>
+                        <option value="spin">旋转缩放</option>
+                        <option value="wave">波浪位移</option>
+                    </select>
+                </div>
+
+                <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+                <p class="status" id="status">准备就绪</p>
+
+                <button class="btn btn-primary" id="btn-export">导出 GIF</button>
+                <button class="btn btn-secondary" id="btn-download" disabled>下载 GIF</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>GIF 预览</h2>
+            <div class="preview-box">
+                <div class="empty-preview" id="empty-tip">导出后在此预览</div>
+                <img id="gif-preview" alt="gif preview" />
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+</body>
+</html>

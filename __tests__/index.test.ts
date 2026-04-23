@@ -1,25 +1,12 @@
 import { describe, expect, test } from 'vitest'
 
-import { Selector } from "../src"
+import { rgbaFramesToGifBytes } from '../src/encodeGif'
 
-
-describe('selector', () => {
-
-    test('is Group', () => {
-
-        const selector = new Selector()
-        expect(selector.children).toBeTruthy()
-
+describe('leafer-x-exportgif', () => {
+    test('rgbaFramesToGifBytes outputs GIF header', () => {
+        const data = new Uint8ClampedArray([255, 0, 0, 255])
+        const bytes = rgbaFramesToGifBytes([{ width: 1, height: 1, data }], 100)
+        const sig = String.fromCharCode(bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5])
+        expect(sig).toBe('GIF89a')
     })
-
-    test('async: is Group', async () => {
-        await new Promise(function (resolve) {
-
-            const selector = new Selector()
-            expect(selector.children).toBeTruthy()
-            resolve(true)
-        })
-
-    })
-
 })

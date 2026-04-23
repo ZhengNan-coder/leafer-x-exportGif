@@ -15,7 +15,7 @@ import serve from 'rollup-plugin-serve'
 const basePath = '.'
 const globalName = 'LeaferX.Exportgif' // <script /> 插件的全局变量名
 const supportPlatforms = ["web","worker","node","miniapp"]
-const external = {'@leafer-ui/core':  'LeaferUI'} // 声明外部依赖，不打进插件包，只引用
+const external = { '@leafer-ui/core': 'LeaferUI', gifenc: 'gifenc' }
 
 const port = 12121 // visit http://localhost:12121
 
@@ -41,8 +41,8 @@ const plugins = [
         browser: true,
         preferBuiltins: false,
     }),
-    typescript({ 
-        tsconfig: './tsconfig.json' 
+    typescript({
+        tsconfig: isDev ? './tsconfig.dev.json' : './tsconfig.json',
     }),
     commonjs()
 ]
@@ -76,13 +76,7 @@ if(isDev) {
 
     // build
 
-    config = [ { // types/index.d.ts
-        input:  basePath + '/src/index.ts',
-        output: {
-            file: basePath + '/types/index.d.ts'
-        },
-        plugins: [ dts()  ]
-    }]
+    config = []
 
     let p = platform[platformName]
     if(!(p instanceof Array)) p = [p]
@@ -156,6 +150,11 @@ if(isDev) {
 
     })
 
+    config.push({
+        input: basePath + '/src/index.ts',
+        output: { file: basePath + '/types/index.d.ts' },
+        plugins: [dts()],
+    })
 }
 
 export default config
