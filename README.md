@@ -11,13 +11,15 @@ Leafer 的 GIF 动画导出插件，支持将 Leafer 画布动画导出为高质
 - 支持 `@leafer-in/film` GIF 动画帧同步导出
 - 可配置帧率、时长、背景色、输出尺寸
 
-## 演示资源
+## 演示
 
-| 文件 | 说明 |
-|------|------|
-| [导出效果演示](./leafer-export%20(1).gif) | 插件导出的 GIF 效果展示 |
-| [操作录屏](./录屏2026-04-23%2022.01.48.mov) | Demo 操作流程录屏 |
-| [GIF 图标](./public/image/gif-icon.svg) | 带 "GIF" 字样的胶片角标图标 |
+**导出效果**
+
+![导出效果演示](./leafer-export%20(1).gif)
+
+**操作录屏**
+
+https://github.com/user-attachments/assets/录屏2026-04-23%2022.01.48.mov
 
 ## 快速开始
 
